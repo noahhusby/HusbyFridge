@@ -1,5 +1,30 @@
+/*
+ * MIT License
+ *
+ * Copyright 2021 noahhusby
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ * is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
+
 #include <Arduino.h>
 #include <Adafruit_DotStar.h>
+#include <LEDController.h>
+#include <effects/FadeDown.h>
+#include <effects/FadeUp.h>
+#include <effects/CenterFill.h>
+#include <effects/CenterCollapse.h>
 #include <SPI.h>
 
 #define FRONT_DATA 4
@@ -10,234 +35,47 @@
 #define FRONT_LENGTH 108
 #define INTERIOR_LENGTH 108
 
-Adafruit_DotStar front(FRONT_LENGTH, FRONT_DATA, FRONT_CLOCK);
-Adafruit_DotStar interior(INTERIOR_LENGTH, INTERIOR_DATA, INTERIOR_CLOCK);
+LEDController front(Adafruit_DotStar(FRONT_LENGTH, FRONT_DATA, FRONT_CLOCK));
+LEDController interior(Adafruit_DotStar(INTERIOR_LENGTH, INTERIOR_DATA, INTERIOR_CLOCK));
 
-enum lightingMode {
-    OFF,
-    ON,
-    LISTENING,
-    SPEAKING,
-    MUTE
-};
-
-lightingMode currentFrontMode = OFF;
-lightingMode desiredFrontMode = ON;
-
-lightingMode currentInteriorMode = OFF;
-lightingMode desiredInteriorMode = ON;
+String lastData;
 
 void setup() {
     Serial.begin(9600);
 
     front.begin();
     interior.begin();
-    front.show();
-    interior.show();
-}
-
-/**
- * Fill the led strip from the center -> out
- *
- * @param strip Adafruit DotStar LED Strip
- * @param color Hex color
- * @param delayLength Delay
- */
-void centerFill(Adafruit_DotStar strip, uint32_t color, unsigned long delayLength) {
-    uint16_t size = strip.numPixels();
-    for(int i = 0; i < size / 2; i++) {
-        strip.setPixelColor(size + i, (strip.getPixelColor(size + i) + color) / 2);
-        strip.setPixelColor(size - i, (strip.getPixelColor(size - i) + color) / 2);
-        strip.show();
-        delay(delayLength);
-        strip.setPixelColor(size + i, color);
-        strip.setPixelColor(size - i, color);
-        strip.show();
-        delay(delayLength);
-    }
-}
-
-/**
- * Fill the led strip from out -> center
- *
- * @param strip Adafruit DotStar LED Strip
- * @param color Hex Color
- * @param delayLength Delay
- */
-void centerCollapse(Adafruit_DotStar strip, uint32_t color, unsigned long delayLength) {
-    uint16_t size = strip.numPixels();
-    for(int i = size / 2; i > 0; i--) {
-        strip.setPixelColor(size + i, (strip.getPixelColor(size + i) + color) / 2);
-        strip.setPixelColor(size - i, (strip.getPixelColor(size - i) + color) / 2);
-        strip.show();
-        delay(delayLength);
-        strip.setPixelColor(size + i, color);
-        strip.setPixelColor(size - i, color);
-        strip.show();
-        delay(delayLength);
-    }
-}
-
-/**
- * Fades a LED strip to a color at a specified rate
- *
- * @param strip Adafruit DotStar LED Strip
- * @param color Hex Color
- * @param delayLength Delay
- */
-void fade(Adafruit_DotStar strip, uint32_t color, unsigned long delayLength) {
-    for(int pixel = 0; pixel < strip.numPixels(); pixel++) {
-        int32_t average = ((strip.getPixelColor(pixel) * 2) + color) / 2;
-        strip.setPixelColor(pixel, average);
-    }
-    strip.show();
-    delay(delayLength);
-    for(int pixel = 0; pixel < strip.numPixels(); pixel++) {
-        int32_t average = (strip.getPixelColor(pixel) + color) / 2;
-        strip.setPixelColor(pixel, average);
-    }
-    strip.show();
-    delay(delayLength);
-    for(int pixel = 0; pixel < strip.numPixels(); pixel++) {
-        int32_t average = (strip.getPixelColor(pixel) + (color * 2)) / 2;
-        strip.setPixelColor(pixel, average);
-    }
-    strip.show();
-    delay(delayLength);
-    strip.fill(color);
-    strip.show();
-}
-
-/**
- * Fades a LED strip up from a specific start and stop brightness at a specified rate
- *
- * @param strip Adafruit DotStar LED Strip
- * @param start Start brightness
- * @param end End brightness
- * @param delayLength Delay
- */
-void fadeUp(Adafruit_DotStar strip, uint8_t start, uint8_t end, unsigned long delayLength) {
-    strip.setBrightness(start);
-    strip.show();
-    for(int i = start; i < end; i++) {
-        strip.setBrightness(i);
-        strip.show();
-        delay(delayLength);
-    }
-}
-
-/**
- * Fades a LED strip up at a specified rate
- *
- * @param strip Adafruit DotStar LED Strip
- * @param delayLength Delay
- */
-void fadeUp(const Adafruit_DotStar& strip, unsigned long delayLength) {
-    fadeUp(strip, 0, 255, delayLength);
-}
-
-/**
- * Fades a LED strip up to a specific color at a specified rate
- *
- * @param strip Adafruit DotStar LED Strip
- * @param color Hex Color
- * @param delayLength Delay
- */
-void fadeUp(Adafruit_DotStar strip, uint32_t color, unsigned long delayLength) {
-    fade(strip, color, delayLength);
-    fadeUp(strip, delayLength);
-}
-
-/**
- * Fades a LED strip down from a specific start and stop brightness at a specified rate
- *
- * @param strip Adafruit DotStar LED Strip
- * @param start Start brightness
- * @param end End brightness
- * @param delayLength Delay
- */
-void fadeDown(Adafruit_DotStar strip, uint8_t start, uint8_t end, unsigned long delayLength) {
-    strip.setBrightness(start);
-    strip.show();
-    for(int i = start; i > end; i--) {
-        strip.setBrightness(i);
-        strip.show();
-        delay(delayLength);
-    }
-}
-
-/**
- * Fades a LED strip down from a specific start and stop brightness at a specified rate
- *
- * @param strip Adafruit DotStar LED Strip
- * @param start Start brightness
- * @param end End brightness
- * @param delayLength Delay
- */
-void fadeDown(const Adafruit_DotStar& strip, unsigned long delayLength) {
-    fadeDown(strip, 255, 0, delayLength);
-}
-
-/**
- * Fades a LED strip down to a specific color at a specified rate
- *
- * @param strip Adafruit DotStar LED Strip
- * @param color Hex Color
- * @param delayLength Delay
- */
-void fadeDown(Adafruit_DotStar strip, uint32_t color, unsigned delayLength) {
-    fade(strip, color, delayLength);
-    fadeDown(strip, delayLength);
 }
 
 void loop() {
+    Serial.println(Serial.available() > 0);
     if(Serial.available() > 0) {
-        String data = Serial.readString();
-        if(data.equals("OFF")) {
-            desiredFrontMode = OFF;
-            desiredFrontMode = OFF;
-        } else if(data.equals("ON")) {
-            desiredFrontMode = ON;
-            desiredInteriorMode = ON;
-        } else if(data.equals("LISTENING")) {
-            desiredFrontMode = LISTENING;
-        } else if(data.equals("SPEAKING")) {
-            desiredFrontMode = SPEAKING;
-        } else if(data.equals("MUTE")) {
-            desiredFrontMode = MUTE;
-        }
-    }
-    if(currentFrontMode != desiredFrontMode) {
-        if(desiredFrontMode == ON) {
-            fadeUp(front, 0xFFFFFF, 2);
-            currentFrontMode = ON;
-        }
-        if(desiredFrontMode == OFF) {
-            if(currentFrontMode == LISTENING || currentFrontMode == SPEAKING || currentFrontMode == MUTE) {
-                centerCollapse(front, 0x000000, 2);
+        String data = Serial.readStringUntil('\n');
+        if(data == "OFF") {
+            if(lastData == "LISTENING" || lastData == "SPEAKING" || lastData == "MUTE") {
+                CenterCollapse e(0x000000);
+                front.setEffect(e);
             } else {
-                fadeDown(front, 4);
+                FadeDown e(-1);
+                front.setEffect(e);
             }
-            currentFrontMode = OFF;
+        } else if(data == "ON") {
+            FadeUp e1(0xFFFFFF);
+            FadeUp e2(0xFFFFFF);
+            front.setEffect(e1);
+            interior.setEffect(e2);
+        } else if(data == "LISTENING") {
+            CenterFill e(0x4287f5);
+            front.setEffect(e);
+        } else if(data == "SPEAKING") {
+            CenterFill e(0xFFFFFF);
+            front.setEffect(e);
+        } else if(data == "MUTE") {
+            //TODO: MUTE
         }
-        if(desiredFrontMode == LISTENING) {
-            centerFill(front, 0x4287f5, 3);
-            currentFrontMode = LISTENING;
-        }
-        if(desiredFrontMode == SPEAKING) {
-            centerFill(front, 0xFFFFFF, 3);
-            currentFrontMode = SPEAKING;
-        }
+        lastData = data;
     }
-    if(currentInteriorMode != desiredInteriorMode) {
-        if(desiredInteriorMode == ON) {
-            fadeUp(interior, 0xFFFFFF, 2);
-            currentInteriorMode = ON;
-        }
-        if(desiredInteriorMode == OFF) {
-            fadeDown(interior, 4);
-            currentInteriorMode = OFF;
-        }
-    }
+    front.update();
+    interior.update();
 }
 
