@@ -18,34 +18,33 @@
  *
  */
 
-#include "FadeDown.h"
+#include "ColorChase.h"
+#include <Adafruit_DotStar.h>
 
-FadeDown::FadeDown() : FadeDown(-1) { }
-
-FadeDown::FadeDown(uint32_t color_input) : FadeDown(color_input, 255, 0) { }
-
-FadeDown::FadeDown(uint32_t color_input, uint8_t start_input, uint8_t end_input) {
-    this->color = color_input;
-    this->b = start_input;
-    this->end = end_input;
+ColorChase::ColorChase(uint32_t color_a_input, uint32_t color_b_input) {
+    color_a = color_a_input;
+    color_b = color_b_input;
 }
 
-void FadeDown::update(Adafruit_DotStar& strip) {
-    if(color != -1 && !configuredColor) {
-        strip.fill(color);
-        configuredColor = true;
+void ColorChase::update(Adafruit_DotStar &strip) {
+    if(slow) {
+        if(threadDelay < 10) {
+            threadDelay++;
+            return;
+        }
+        threadDelay = 0;
     }
-    strip.setBrightness(b);
+    strip.setPixelColor(l, cyclePhase ? color_a : color_b);
     strip.show();
-    b--;
-    if(b == end) {
-        strip.fill(0x00000000);
-        strip.setBrightness(255);
-        strip.show();
+    l++;
+    if(l >= strip.numPixels()) {
+        cyclePhase = !cyclePhase;
+        l = 0;
+        slow = true;
     }
 }
 
-bool FadeDown::isCompleted() {
-    return b == end;
+bool ColorChase::isCompleted() {
+    return false;
 }
 

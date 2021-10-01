@@ -18,34 +18,29 @@
  *
  */
 
-#include "FadeDown.h"
+//
+// Created by Noah Husby on 9/30/2021.
+//
 
-FadeDown::FadeDown() : FadeDown(-1) { }
+#include "Strobe.h"
 
-FadeDown::FadeDown(uint32_t color_input) : FadeDown(color_input, 255, 0) { }
-
-FadeDown::FadeDown(uint32_t color_input, uint8_t start_input, uint8_t end_input) {
-    this->color = color_input;
-    this->b = start_input;
-    this->end = end_input;
+Strobe::Strobe(uint32_t color_input) {
+    color = color_input;
 }
 
-void FadeDown::update(Adafruit_DotStar& strip) {
-    if(color != -1 && !configuredColor) {
-        strip.fill(color);
-        configuredColor = true;
+void Strobe::update(Adafruit_DotStar &strip) {
+    if(threadDelay < 80) {
+        threadDelay++;
+        return;
     }
-    strip.setBrightness(b);
+    strip.setBrightness(255);
+    strip.fill(enabled ? color : 0x00000000);
     strip.show();
-    b--;
-    if(b == end) {
-        strip.fill(0x00000000);
-        strip.setBrightness(255);
-        strip.show();
-    }
+    enabled = !enabled;
+    threadDelay = 0;
 }
 
-bool FadeDown::isCompleted() {
-    return b == end;
+bool Strobe::isCompleted() {
+    return false;
 }
 

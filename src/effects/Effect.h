@@ -25,14 +25,11 @@
 
 class Effect {
 public:
-    void initialize(const Adafruit_DotStar& strip_input) {
-        strip = strip_input;
-    }
-    virtual void update() = 0;
-    virtual bool isCompleted() = 0;
+    Effect() {
 
-protected:
-    Adafruit_DotStar strip;
+    }
+    virtual void update(Adafruit_DotStar& strip) = 0;
+    virtual bool isCompleted() = 0;
 };
 
 

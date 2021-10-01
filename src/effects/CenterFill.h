@@ -21,16 +21,17 @@
 #ifndef HUSBYFRIDGE_CENTERFILL_H
 #define HUSBYFRIDGE_CENTERFILL_H
 
-#include <Adafruit_DotStar.h>
 #include "Effect.h"
 
 class CenterFill : public Effect {
 public:
     CenterFill(uint32_t color_input);
-    void update() override;
+    void update(Adafruit_DotStar& strip) override;
     bool isCompleted() override;
 private:
     uint32_t color;
+    uint16_t l = 0;
+    uint16_t total = 0;
 };
 
 

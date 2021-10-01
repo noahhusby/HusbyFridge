@@ -21,17 +21,15 @@
 #ifndef HUSBYFRIDGE_FADEEFFECT_H
 #define HUSBYFRIDGE_FADEEFFECT_H
 
-#include <Adafruit_DotStar.h>
 #include "Effect.h"
-
 class FadeEffect: public Effect {
     public:
-        FadeEffect(uint32_t color_input, unsigned long delay_input);
-        void update() override;
+        FadeEffect(uint32_t color_input);
+        void update(Adafruit_DotStar& strip) override;
         bool isCompleted() override;
     private:
         uint32_t color;
-        long delayLength;
+        uint16_t l = 0;
 };
 
 

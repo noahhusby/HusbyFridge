@@ -24,25 +24,20 @@ CenterCollapse::CenterCollapse(uint32_t color_input) {
     this->color = color_input;
 }
 
-int pixel = -1;
-
-void CenterCollapse::update() {
-    if(pixel == -1) {
-        pixel = strip.numPixels() / 2;
+void CenterCollapse::update(Adafruit_DotStar& strip) {
+    if(total == 0) {
+        total = strip.numPixels() / 2;
     }
-    uint16_t size = strip.numPixels();
-    strip.setPixelColor(size + pixel, (strip.getPixelColor(size + pixel) + color) / 2);
-    strip.setPixelColor(size - pixel, (strip.getPixelColor(size - pixel) + color) / 2);
+    //strip.setPixelColor(size + l, (strip.getPixelColor(size + l) + color) / 2);
+    //strip.setPixelColor(size - l, (strip.getPixelColor(size - l) + color) / 2);
+    //strip.show();
+    strip.setPixelColor(total + (total - l), color);
+    strip.setPixelColor(total - (total - l), color);
     strip.show();
-    delay(2);
-    strip.setPixelColor(size + pixel, color);
-    strip.setPixelColor(size - pixel, color);
-    strip.show();
-    delay(2);
-    pixel--;
+    l++;
 }
 
 bool CenterCollapse::isCompleted() {
-    return pixel < 1;
+    return l > total && total != 0;
 }
 

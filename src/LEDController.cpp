@@ -20,22 +20,28 @@
 
 #include "LEDController.h"
 
-LEDController::LEDController(const Adafruit_DotStar& s)
-    : strip(s) {
+
+LEDController::LEDController(uint8_t length, uint8_t data, uint8_t clock) : strip(length, data, clock, DOTSTAR_BGR){
 }
 
-void LEDController::setEffect(Effect& e) {
-    effect = &e;
-    effect->initialize(strip);
+void LEDController::setEffect(Effect * e) {
+    effect = e;
 }
 
 void LEDController::update() {
     if(!effect->isCompleted()) {
-        effect->update();
+        effect->update(strip);
     }
 }
 
 void LEDController::begin() {
     strip.begin();
+    //strip.fill(0xFFFFFF);
+    //strip.show();
+    strip.fill(0xf54266);
     strip.show();
+}
+
+Effect * LEDController::getEffect() {
+    return effect;
 }

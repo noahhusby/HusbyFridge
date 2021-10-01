@@ -18,34 +18,25 @@
  *
  */
 
-#include "FadeDown.h"
+//
+// Created by Noah Husby on 9/30/2021.
+//
 
-FadeDown::FadeDown() : FadeDown(-1) { }
+#ifndef HUSBYFRIDGE_STROBE_H
+#define HUSBYFRIDGE_STROBE_H
 
-FadeDown::FadeDown(uint32_t color_input) : FadeDown(color_input, 255, 0) { }
+#include "Effect.h"
 
-FadeDown::FadeDown(uint32_t color_input, uint8_t start_input, uint8_t end_input) {
-    this->color = color_input;
-    this->b = start_input;
-    this->end = end_input;
-}
+class Strobe : public Effect {
+public:
+    Strobe(uint32_t color_input);
+    void update(Adafruit_DotStar& strip) override;
+    bool isCompleted() override;
+private:
+    uint32_t color;
+    uint8_t threadDelay = 0;
+    bool enabled = false;
+};
 
-void FadeDown::update(Adafruit_DotStar& strip) {
-    if(color != -1 && !configuredColor) {
-        strip.fill(color);
-        configuredColor = true;
-    }
-    strip.setBrightness(b);
-    strip.show();
-    b--;
-    if(b == end) {
-        strip.fill(0x00000000);
-        strip.setBrightness(255);
-        strip.show();
-    }
-}
 
-bool FadeDown::isCompleted() {
-    return b == end;
-}
-
+#endif //HUSBYFRIDGE_STROBE_H

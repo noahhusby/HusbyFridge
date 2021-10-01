@@ -20,31 +20,29 @@
 
 #include "FadeEffect.h"
 
-FadeEffect::FadeEffect(uint32_t color_input, unsigned long delay_input) {
+FadeEffect::FadeEffect(uint32_t color_input) {
     color = color_input;
-    delayLength = delay_input;
 }
 
 int8_t phase = 0;
-int16_t led = 0;
-void FadeEffect::update() {
-    if(led > strip.numPixels()) {
-        led = 0;
+
+void FadeEffect::update(Adafruit_DotStar& strip) {
+    if(l > strip.numPixels()) {
+        l = 0;
         phase++;
         strip.show();
     }
     uint32_t pixelColor = color;
     if(phase == 0) {
-        pixelColor = ((strip.getPixelColor(led) * 2) + color) / 2;
+        pixelColor = ((strip.getPixelColor(l) * 2) + color) / 2;
     } else if(phase == 1) {
-        pixelColor = (strip.getPixelColor(led) + color) / 2;
+        pixelColor = (strip.getPixelColor(l) + color) / 2;
     } else if(phase == 2) {
-        pixelColor = (strip.getPixelColor(led) + (color * 2)) / 2;
+        pixelColor = (strip.getPixelColor(l) + (color * 2)) / 2;
     }
 
-    strip.setPixelColor(led, pixelColor);
-    led++;
-    delay(delayLength);
+    strip.setPixelColor(l, pixelColor);
+    l++;
 }
 
 bool FadeEffect::isCompleted() {

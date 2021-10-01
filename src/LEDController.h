@@ -26,14 +26,15 @@
 
 class LEDController {
 public:
-    LEDController(const Adafruit_DotStar& s);
-    void setEffect(Effect& e);
+    LEDController(uint8_t length, uint8_t data, uint8_t clock);
+    void setEffect(Effect * e);
+    Effect * getEffect();
     void update();
     void begin();
 
 private:
     Adafruit_DotStar strip;
-    Effect * effect;
+    Effect * effect{};
 };
 
 

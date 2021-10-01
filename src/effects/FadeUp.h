@@ -21,7 +21,6 @@
 #ifndef HUSBYFRIDGE_FADEUP_H
 #define HUSBYFRIDGE_FADEUP_H
 
-#include <Adafruit_DotStar.h>
 #include "Effect.h"
 
 class FadeUp: public Effect {
@@ -29,11 +28,13 @@ public:
     FadeUp();
     FadeUp(uint32_t color_input);
     FadeUp(uint32_t color_input, uint8_t start_input, uint8_t end_input);
-    void update() override;
+    void update(Adafruit_DotStar& strip) override;
     bool isCompleted() override;
 private:
     uint32_t color;
-    int8_t end;
+    uint8_t end;
+    uint8_t b;
+    bool configuredColor = false;
 };
 
 

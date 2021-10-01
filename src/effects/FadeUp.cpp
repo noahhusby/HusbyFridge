@@ -19,32 +19,29 @@
  */
 
 #include "FadeUp.h"
-
-uint8_t brightness;
-bool configuredColor = false;
+#include <Adafruit_DotStar.h>
 
 FadeUp::FadeUp() : FadeUp(-1) { }
 
-FadeUp::FadeUp(uint32_t color_input) : FadeUp(color_input, 0, 255) { }
+FadeUp::FadeUp(uint32_t color_input) : FadeUp(color_input, 0, 254) { }
 
 FadeUp::FadeUp(uint32_t color_input, uint8_t start_input, uint8_t end_input) {
     this->color = color_input;
-    brightness = start_input;
+    b = start_input;
     this->end = end_input;
 }
 
-void FadeUp::update() {
+void FadeUp::update(Adafruit_DotStar& strip) {
     if(color != -1 && !configuredColor) {
         strip.fill(color);
         configuredColor = true;
     }
-    strip.setBrightness(brightness);
+    strip.setBrightness(b);
     strip.show();
-    brightness++;
-    delay(2);
+    b++;
 }
 
 bool FadeUp::isCompleted() {
-    return brightness < end;
+    return b > end;
 }
 

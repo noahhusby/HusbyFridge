@@ -25,57 +25,66 @@
 #include <effects/FadeUp.h>
 #include <effects/CenterFill.h>
 #include <effects/CenterCollapse.h>
+#include <effects/ColorChase.h>
+#include <effects/Strobe.h>
 #include <SPI.h>
 
-#define FRONT_DATA 4
-#define FRONT_CLOCK 5
-#define INTERIOR_DATA 6
-#define INTERIOR_CLOCK 7
+#define FRONT_DATA 50
+#define FRONT_CLOCK 51
+#define INTERIOR_DATA 48
+#define INTERIOR_CLOCK 49
 
-#define FRONT_LENGTH 108
-#define INTERIOR_LENGTH 108
+#define FRONT_LENGTH 54
+#define INTERIOR_LENGTH 56
 
-LEDController front(Adafruit_DotStar(FRONT_LENGTH, FRONT_DATA, FRONT_CLOCK));
-LEDController interior(Adafruit_DotStar(INTERIOR_LENGTH, INTERIOR_DATA, INTERIOR_CLOCK));
+LEDController front(FRONT_LENGTH, FRONT_DATA, FRONT_CLOCK);
+LEDController interior(INTERIOR_LENGTH, INTERIOR_DATA, INTERIOR_CLOCK);
 
-String lastData;
+String lastData = "";
 
 void setup() {
+    pinMode(FRONT_DATA, OUTPUT);
+    pinMode(FRONT_CLOCK, OUTPUT);
     Serial.begin(9600);
-
     front.begin();
     interior.begin();
+    front.setEffect(new FadeUp(0x00FFFFFF));
+    interior.setEffect(new FadeUp(0x00FFFFFF));
 }
 
 void loop() {
-    Serial.println(Serial.available() > 0);
     if(Serial.available() > 0) {
         String data = Serial.readStringUntil('\n');
         if(data == "OFF") {
             if(lastData == "LISTENING" || lastData == "SPEAKING" || lastData == "MUTE") {
-                CenterCollapse e(0x000000);
-                front.setEffect(e);
+                front.setEffect(new CenterCollapse(0x00000000));
             } else {
-                FadeDown e(-1);
-                front.setEffect(e);
+                front.setEffect(new FadeDown(-1));
             }
+            interior.setEffect(new FadeDown(-1));
         } else if(data == "ON") {
-            FadeUp e1(0xFFFFFF);
-            FadeUp e2(0xFFFFFF);
-            front.setEffect(e1);
-            interior.setEffect(e2);
+                front.setEffect(new FadeUp(0x00FFFFFF));
+                interior.setEffect(new FadeUp(0x00FFFFFF));
         } else if(data == "LISTENING") {
-            CenterFill e(0x4287f5);
-            front.setEffect(e);
+            front.setEffect(new CenterFill(0x000000FF));
+            interior.setEffect(new ColorChase(0x00FFFFFF, 0x000000FF));
         } else if(data == "SPEAKING") {
-            CenterFill e(0xFFFFFF);
-            front.setEffect(e);
+            front.setEffect(new CenterFill(0x00FFFFFF));
+            interior.setEffect(new CenterFill(0x00FFFFFF));
         } else if(data == "MUTE") {
-            //TODO: MUTE
+            front.setEffect(new CenterFill(0x00FF0000));
+            interior.setEffect(new CenterFill(0x00FF0000));
+        } else if(data == "COOL_EFFECT") {
+            interior.setEffect(new ColorChase(0x00FF0000, 0x008d32a8));
+        } else if(data == "ALARM") {
+            front.setEffect(new Strobe(0x00FF0000));
+            interior.setEffect(new ColorChase(0x00FF0000, 0x00FFFFFF));
         }
         lastData = data;
     }
     front.update();
     interior.update();
+    //Serial.print(front.getEffect()->isCompleted());
+    delay(2);
 }
 

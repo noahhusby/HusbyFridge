@@ -30,4 +30,4 @@ add_custom_target(
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-add_executable(Z_DUMMY_TARGET ${SRC_LIST} src/LedController.cpp src/LedController.h src/LEDController.cpp src/LEDController.h src/effects/Effect.h src/effects/FadeEffect.cpp src/effects/FadeEffect.h src/effects/FadeUp.cpp src/effects/FadeUp.h src/effects/FadeDown.cpp src/effects/FadeDown.h src/effects/CenterFill.cpp src/effects/CenterFill.h src/effects/CenterCollapse.cpp src/effects/CenterCollapse.h)
+add_executable(Z_DUMMY_TARGET ${SRC_LIST} src/effects/ColorChase.cpp src/effects/ColorChase.h src/effects/Strobe.cpp src/effects/Strobe.h)

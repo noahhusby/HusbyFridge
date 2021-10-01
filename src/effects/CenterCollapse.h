@@ -21,18 +21,17 @@
 #ifndef HUSBYFRIDGE_CENTERCOLLAPSE_H
 #define HUSBYFRIDGE_CENTERCOLLAPSE_H
 
-#include <Adafruit_DotStar.h>
 #include "Effect.h"
-
 
 class CenterCollapse : public Effect {
 public:
     CenterCollapse(uint32_t color_input);
-    void update() override;
+    void update(Adafruit_DotStar& strip) override;
     bool isCompleted() override;
 private:
     uint32_t color;
-
+    uint16_t l = 0;
+    uint16_t total = 0;
 };
 
 

@@ -24,22 +24,20 @@ CenterFill::CenterFill(uint32_t color_input) {
     this->color = color_input;
 }
 
-int pixel = 0;
-
-void CenterFill::update() {
-    uint16_t size = strip.numPixels();
-    strip.setPixelColor(size + pixel, (strip.getPixelColor(size + pixel) + color) / 2);
-    strip.setPixelColor(size - pixel, (strip.getPixelColor(size - pixel) + color) / 2);
+void CenterFill::update(Adafruit_DotStar& strip) {
+    if(total == 0) {
+        total = strip.numPixels() / 2;
+    }
+    //strip.setPixelColor(size + l, (strip.getPixelColor(size + l) + color) / 2);
+    //strip.setPixelColor(size - l, (strip.getPixelColor(size - l) + color) / 2);
+    //strip.show();
+    strip.setPixelColor(total + l, color);
+    strip.setPixelColor(total - l, color);
     strip.show();
-    delay(2);
-    strip.setPixelColor(size + pixel, color);
-    strip.setPixelColor(size - pixel, color);
-    strip.show();
-    delay(2);
-    pixel++;
+    l++;
 }
 
 bool CenterFill::isCompleted() {
-    return pixel < strip.numPixels() / 2;
+    return l >= total && total != 0;
 }
 
