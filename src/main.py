@@ -165,7 +165,6 @@ class Myassistant():
 
         if (event.type == EventType.ON_RENDER_RESPONSE):
             assistantindicator('speaking')
-            say(event.args["text"])
 
         #if (event.type == EventType.ON_DEVICE_ACTION):
         #    print('action')
@@ -235,9 +234,6 @@ class Myassistant():
         self.singledetectedresponse=''
         self.singleresposne=True
         say(prompt)
-        self.assistant.start_conversation()
-        while self.singledetectedresponse=='':
-            time.sleep(.1)
         self.singleresposne=False
         return self.singledetectedresponse
 

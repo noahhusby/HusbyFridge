@@ -12,6 +12,7 @@ with open('{}/src/config.yaml'.format(ROOT_PATH), 'r', encoding='utf8') as conf:
     configuration = yaml.load(conf, Loader=yaml.FullLoader)
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = configuration['TextToSpeech']['Google_Cloud_TTS_Credentials_Path']
+client = texttospeech.TextToSpeechClient()
 
 keywordfile = '{}/src/keywords_en.yaml'.format(ROOT_PATH)
 with open(keywordfile, 'r', encoding='utf8') as conf:
@@ -23,6 +24,7 @@ translanguage = 'en'
 
 
 def say(words):
+    say('Speaking: ' + words)
     try:
         gcloudgender = texttospeech.enums.SsmlVoiceGender.FEMALE
         synthesis_input = texttospeech.types.SynthesisInput(text=words)
