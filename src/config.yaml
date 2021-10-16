@@ -1,0 +1,12 @@
+#Text to speech conversation
+TextToSpeech:
+  # Set the choice to:
+  # 1. "gTTS" for quotaless text to speech conversion
+  # 2. "Google Cloud" for Google Cloud text to sppech conversion. Free limit 4 Million Characters/month
+  Choice: 'gTTS'
+  Google_Cloud_TTS_Credentials_Path: "ENTER THE PATH TO YOUR TTS CREDENTIALS FILE HERE"
+
+#Custom wakeword On/Off.
+#To enable custom wakeword, change status to Enabled and restart the assistant.
+Wakewords:
+  Ok_Google: 'Enabled'

@@ -1,0 +1,10 @@
+# Keywords are certain specific word/words that must be present in the user query/command to trigger the custom action.
+# Feel free to modify, but make sure that each custom action has unique keyword.
+# CHANGE THE WORD PRESENT WITHIN THE QUOTES ONLY. DO NOT ALTER OTHERS
+
+Keywords:
+   # System volume adjustment
+  Volume_up:
+    - 'turn up the volume'
+  Volume_down:
+    - 'turn down the volume'
