@@ -88,6 +88,7 @@ ser.flush()
 class Myassistant():
 
     def __init__(self):
+        self.alarm = None
         self.interrupted=False
         self.can_start_conversation=False
         self.assistant=None
@@ -121,28 +122,28 @@ class Myassistant():
 
         if event.type == EventType.ON_ALERT_STARTED:
             self.can_start_conversation = True
-            assistantindicator('alarm')
+            self.assistantindicator('alarm')
 
         if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
             subprocess.Popen(["aplay", "{}/src/resources/wake.wav".format(ROOT_PATH)], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             self.can_start_conversation = False
-            assistantindicator('listening')
+            self.assistantindicator('listening')
 
         if (event.type == EventType.ON_CONVERSATION_TURN_TIMEOUT or event.type == EventType.ON_NO_RESPONSE):
             self.can_start_conversation = True
-            assistantindicator('off')
+            self.assistantindicator('off')
 
         if (event.type == EventType.ON_RESPONDING_STARTED and event.args and not event.args['is_error_response']):
-            assistantindicator('speaking')
+            self.assistantindicator('speaking')
 
         if (event.type == EventType.ON_RESPONDING_FINISHED):
-            assistantindicator('off')
+            self.assistantindicator('off')
 
         if (event.type == EventType.ON_ALERT_FINISHED):
-            assistantindicator('off')
+            self.assistantindicator('off')
 
         if (event.type == EventType.ON_RENDER_RESPONSE):
-            assistantindicator('speaking')
+            self.assistantindicator('speaking')
 
         #if (event.type == EventType.ON_DEVICE_ACTION):
         #    print('action')
@@ -151,12 +152,12 @@ class Myassistant():
             if self.singleresposne:
                 self.assistant.stop_conversation()
                 self.singledetectedresponse = event.args["text"]
-                assistantindicator('off')
+                self.assistantindicator('off')
 
         if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
                 event.args and not event.args['with_follow_on_turn']):
             self.can_start_conversation = True
-            assistantindicator('off')
+            self.assistantindicator('off')
 
     def register_device(self,project_id, credentials, device_model_id, device_id):
         """Register the device if needed.
@@ -274,24 +275,24 @@ class Myassistant():
                     assistant.send_text_query(args.query)
                 self.process_event(event)
 
-def assistantindicator(self, activity):
-    if self.alarm is not None:
-        self.alarm.kill()
-    activity=activity.lower()
-    if activity=='listening':
-        ser.write(b"LISTENING\n")
-    elif activity=='speaking':
-        ser.write(b"SPEAKING\n")
-    elif (activity=='off' or activity=='unmute'):
-        ser.write(b"OFF\n")
-    elif (activity=='on' or activity=='mute'):
-        ser.write(b"MUTE\n")
-    elif (activity=='alarm'):
-        ser.write(b"ALARM\n")
-        self.alarm = subprocess.Popen(["aplay", "{}/src/resources/alarm.wav".format(ROOT_PATH)], stdin=subprocess.PIPE,
+    def assistantindicator(self, activity):
+        if self.alarm is not None:
+            self.alarm.kill()
+        activity=activity.lower()
+        if activity=='listening':
+            ser.write(b"LISTENING\n")
+        elif activity=='speaking':
+            ser.write(b"SPEAKING\n")
+        elif (activity=='off' or activity=='unmute'):
+            ser.write(b"OFF\n")
+        elif (activity=='on' or activity=='mute'):
+            ser.write(b"MUTE\n")
+        elif (activity=='alarm'):
+            ser.write(b"ALARM\n")
+            self.alarm = subprocess.Popen(["aplay", "{}/src/resources/alarm.wav".format(ROOT_PATH)], stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    elif (activity=='on'):
-        ser.write(b"ON\n")
+        elif (activity=='on'):
+            ser.write(b"ON\n")
 
 
 if __name__ == '__main__':
