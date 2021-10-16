@@ -98,4 +98,5 @@ def say(words,sourcelang=None,destinationlang=None):
         if TTSChoice=='GoogleCloud':
             gcloudsay(sayword,language)
         elif TTSChoice=='GTTS':
+            print('GTTS')
             #gttssay(sayword,translanguage)
