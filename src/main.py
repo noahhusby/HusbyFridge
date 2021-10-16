@@ -116,7 +116,7 @@ class Myassistant():
     def signal_handler(self,signal, frame):
         self.interrupted = True
 
-    def interrupt_callback(self,):
+    def interrupt_callback(self):
         return self.interrupted
 
     def process_event(self,event):
@@ -166,6 +166,9 @@ class Myassistant():
         if (event.type == EventType.ON_RENDER_RESPONSE):
             assistantindicator('speaking')
             say(event.args["text"])
+
+        #if (event.type == EventType.ON_DEVICE_ACTION):
+        #    print('action')
 
         if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
             assistantindicator('off')
@@ -348,6 +351,8 @@ def assistantindicator(activity):
         ser.write(b"MUTE\n")
     elif (activity=='alarm'):
         ser.write(b"ALARM\n")
+    elif (activity=='on'):
+        ser.write(b"ON\n")
 
 
 if __name__ == '__main__':

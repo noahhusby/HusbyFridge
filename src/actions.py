@@ -37,7 +37,6 @@ with open(keywordfile,'r' , encoding='utf8') as conf:
 ##Speech and translator declarations
 translator = Translator()
 outputfile="/tmp/output.mp3"
-ttsfilename="/tmp/gcloud.mp3"
 language='en-US'
 translanguage='en'
 
