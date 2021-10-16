@@ -22,6 +22,7 @@ import json
 import os.path
 import pathlib2 as pathlib
 import os
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/home/pi/google_tts_credentials.json'
 import subprocess
 import logging
 import serial
