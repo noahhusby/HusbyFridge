@@ -63,6 +63,7 @@ def gcloudsay(phrase,lang):
             out.write(response.audio_content)
         os.system('mpg123 -q ' + outputfile)
         os.remove(outputfile)
+        return
     except google.api_core.exceptions.ResourceExhausted:
         print("Google cloud text to speech quota exhausted. Using GTTS. Make sure to change the choice in config.yaml")
         gttssay(phrase,lang)
