@@ -234,7 +234,6 @@ class Myassistant():
         self.singledetectedresponse=''
         self.singleresposne=True
         say(prompt)
-        self.singleresposne=False
         return self.singledetectedresponse
 
     def custom_command(self,usrcmd):
