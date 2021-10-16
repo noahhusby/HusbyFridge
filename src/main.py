@@ -289,7 +289,7 @@ class Myassistant():
             ser.write(b"MUTE\n")
         elif (activity=='alarm'):
             ser.write(b"ALARM\n")
-            self.alarm = subprocess.Popen(["aplay", "{}/src/resources/alarm.wav".format(ROOT_PATH)], stdin=subprocess.PIPE,
+            self.alarm = subprocess.Popen(["mpg123", "--loop", "100", "{}/src/resources/alarm.mp3".format(ROOT_PATH)], stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         elif (activity=='on'):
             ser.write(b"ON\n")
