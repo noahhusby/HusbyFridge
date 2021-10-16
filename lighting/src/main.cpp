@@ -77,14 +77,15 @@ void loop() {
         } else if(data == "COOL_EFFECT") {
             interior.setEffect(new ColorChase(0x00FF0000, 0x008d32a8));
         } else if(data == "ALARM") {
-            front.setEffect(new Strobe(0x00FF0000));
-            interior.setEffect(new ColorChase(0x00FF0000, 0x00FFFFFF));
+            front.setEffect(new ColorChase(0x00FF0000, 0x00000000));
+        } else if(data == "TIMER") {
+            front.setEffect(new ColorChase(0x00FFFFFF, 0x00000000));
+            interior.setEffect(new Strobe(0x000000FF));
         }
         lastData = data;
     }
     front.update();
     interior.update();
-    //Serial.print(front.getEffect()->isCompleted());
     delay(2);
 }
 
