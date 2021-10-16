@@ -66,7 +66,7 @@ def gcloudsay(phrase,lang):
         return
     except google.api_core.exceptions.ResourceExhausted:
         print("Google cloud text to speech quota exhausted. Using GTTS. Make sure to change the choice in config.yaml")
-        gttssay(phrase,lang)
+        #gttssay(phrase,lang)
 
 #Word translator
 def trans(words,destlang,srclang):
@@ -85,7 +85,7 @@ def say(words,sourcelang=None,destinationlang=None):
             gcloudsay(sayword,language)
         elif TTSChoice=='GTTS':
             sayword=trans(words,destinationlang,sourcelang)
-            gttssay(sayword,translanguage)
+            #gttssay(sayword,translanguage)
     else:
         if sourcelang==None:
             sourcelanguage='en'
@@ -98,4 +98,4 @@ def say(words,sourcelang=None,destinationlang=None):
         if TTSChoice=='GoogleCloud':
             gcloudsay(sayword,language)
         elif TTSChoice=='GTTS':
-            gttssay(sayword,translanguage)
+            #gttssay(sayword,translanguage)
