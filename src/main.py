@@ -145,6 +145,9 @@ class Myassistant():
         if (event.type == EventType.ON_RENDER_RESPONSE):
             self.assistantindicator('speaking')
 
+        if (event.type == EventType.ON_ASSISTANT_ERROR):
+            self.assistantindicator('error')
+
         #if (event.type == EventType.ON_DEVICE_ACTION):
         #    print('action')
 
@@ -285,7 +288,7 @@ class Myassistant():
             ser.write(b"SPEAKING\n")
         elif (activity=='off' or activity=='unmute'):
             ser.write(b"OFF\n")
-        elif (activity=='on' or activity=='mute'):
+        elif (activity=='on' or activity=='mute' or activity=='error'):
             ser.write(b"MUTE\n")
         elif (activity=='alarm'):
             ser.write(b"ALARM\n")
