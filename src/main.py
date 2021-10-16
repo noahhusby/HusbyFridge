@@ -17,11 +17,6 @@
 from __future__ import print_function
 import faulthandler
 faulthandler.enable()
-from google.cloud import speech
-from google.cloud.speech import enums
-from google.cloud.speech import types
-from actions import say
-from actions import configuration
 from actions import custom_action_keyword
 from threading import Thread
 from actions import translanguage
@@ -214,37 +209,15 @@ class Myassistant():
                 raise Exception('failed to register device: ' + r.text)
             print('\rDevice registered.')
 
-
-    def detected(self):
-        if self.can_start_conversation == True:
-            if self.mutestatus:
-                self.assistant.set_mic_mute(False)
-                time.sleep(1)
-                self.assistant.start_conversation()
-            if not self.mutestatus:
-                self.assistant.start_conversation()
-            print('Assistant is listening....')
-
-    def start_detector(self):
-        self.detector.start(detected_callback=self.callbacks,
-            interrupt_check=self.interrupt_callback,
-            sleep_time=0.03)
-
-    def single_user_response(self,prompt):
-        self.singledetectedresponse=''
-        self.singleresposne=True
-        say(prompt)
-        return self.singledetectedresponse
-
     def custom_command(self,usrcmd):
         if (custom_action_keyword['Keywords']['Volume_up'][0]).lower() in str(usrcmd).lower():
             self.assistant.stop_conversation()
             os.system("amixer set Master 5%+")
-            say("I turn up the volume")
+            #say("I turn up the volume")
         if (custom_action_keyword['Keywords']['Volume_down'][0]).lower() in str(usrcmd).lower():
             self.assistant.stop_conversation()
             os.system("amixer set Master 5%-")
-            say("I turn down the volume")
+            #say("I turn down the volume")
 
     def main(self):
         parser = argparse.ArgumentParser(
