@@ -92,7 +92,6 @@ class Myassistant():
         self.can_start_conversation=False
         self.assistant=None
         self._input_device_index = None
-        self.mutestatus=False
         self.interpreter=False
         self.interpconvcounter=0
         self.interpcloudlang1=language
@@ -116,15 +115,9 @@ class Myassistant():
             event(event.Event): The current event to process.
         """
         print("[" + str(event.type) + "] " + str(event.args))
-        if event.type == EventType.ON_MUTED_CHANGED:
-            self.mutestatus=event.args["is_muted"]
 
         if event.type == EventType.ON_START_FINISHED:
             self.can_start_conversation = True
-            if os.path.isfile("{}/.mute".format(USER_PATH)):
-                assistantindicator('mute')
-            if (os.path.isfile("{}/.mute".format(USER_PATH))):
-                self.assistant.set_mic_mute(True)
 
         if event.type == EventType.ON_ALERT_STARTED:
             self.can_start_conversation = True
@@ -138,10 +131,6 @@ class Myassistant():
         if (event.type == EventType.ON_CONVERSATION_TURN_TIMEOUT or event.type == EventType.ON_NO_RESPONSE):
             self.can_start_conversation = True
             assistantindicator('off')
-
-            if (os.path.isfile("{}/.mute".format(USER_PATH))):
-                self.assistant.set_mic_mute(True)
-                assistantindicator('mute')
 
         if (event.type == EventType.ON_RESPONDING_STARTED and event.args and not event.args['is_error_response']):
             assistantindicator('speaking')
@@ -168,9 +157,6 @@ class Myassistant():
                 event.args and not event.args['with_follow_on_turn']):
             self.can_start_conversation = True
             assistantindicator('off')
-            if (os.path.isfile("{}/.mute".format(USER_PATH))):
-                self.assistant.set_mic_mute(True)
-                assistantindicator('mute')
 
     def register_device(self,project_id, credentials, device_model_id, device_id):
         """Register the device if needed.
