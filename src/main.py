@@ -159,9 +159,10 @@ class Myassistant():
         #    print('action')
 
         if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
-            self.assistant.stop_conversation()
-            self.singledetectedresponse = event.args["text"]
-            assistantindicator('off')
+            if self.singleresposne:
+                self.assistant.stop_conversation()
+                self.singledetectedresponse = event.args["text"]
+                assistantindicator('off')
 
         if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
                 event.args and not event.args['with_follow_on_turn']):
