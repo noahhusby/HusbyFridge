@@ -274,7 +274,9 @@ class Myassistant():
                     assistant.send_text_query(args.query)
                 self.process_event(event)
 
-def assistantindicator(activity):
+def assistantindicator(self, activity):
+    if self.alarm is not None:
+        self.alarm.kill()
     activity=activity.lower()
     if activity=='listening':
         ser.write(b"LISTENING\n")
@@ -286,6 +288,8 @@ def assistantindicator(activity):
         ser.write(b"MUTE\n")
     elif (activity=='alarm'):
         ser.write(b"ALARM\n")
+        self.alarm = subprocess.Popen(["aplay", "{}/src/resources/alarm.wav".format(ROOT_PATH)], stdin=subprocess.PIPE,
+                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     elif (activity=='on'):
         ser.write(b"ON\n")
 
