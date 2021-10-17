@@ -202,9 +202,6 @@ class Myassistant():
             ser.write(b"ON\n")
         elif activity == 'timer':
             ser.write(b"TIMER\n")
-            self.alarm = subprocess.Popen(["mpg123", "--loop", "100", "{}/src/resources/alarm.mp3".format(ROOT_PATH)],
-                                          stdin=subprocess.PIPE,
-                                          stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 
 if __name__ == '__main__':

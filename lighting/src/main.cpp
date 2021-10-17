@@ -78,9 +78,10 @@ void loop() {
             interior.setEffect(new ColorChase(0x00FF0000, 0x008d32a8));
         } else if(data == "ALARM") {
             front.setEffect(new ColorChase(0x00FF0000, 0x00000000));
+            interior.setEffect(new ColorChase(0x00FF0000, 0x00000000));
         } else if(data == "TIMER") {
             front.setEffect(new ColorChase(0x00FFFFFF, 0x00000000));
-            interior.setEffect(new Strobe(0x000000FF));
+            interior.setEffect(new ColorChase(0x000000FF, 0x00000000));
         }
         lastData = data;
     }
