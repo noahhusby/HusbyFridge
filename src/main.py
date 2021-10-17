@@ -116,8 +116,7 @@ class Myassistant():
         if event.type == EventType.ON_ASSISTANT_ERROR:
             self.set_lighting('error')
 
-        if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
-                event.args and not event.args['with_follow_on_turn']):
+        if event.type == EventType.ON_CONVERSATION_TURN_FINISHED:
             self.set_lighting('off')
 
     def main(self):
