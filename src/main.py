@@ -132,6 +132,14 @@ class Myassistant():
         parser.add_argument('--nickname', type=str,
                             metavar='NICKNAME', required=False,
                             help='the nickname used to register this device')
+        parser.add_argument('--device-config', type=str,
+                            metavar='DEVICE_CONFIG_FILE',
+                            default=os.path.join(
+                                os.path.expanduser('~/.config'),
+                                'googlesamples-assistant',
+                                'device_config_library.json'
+                            ),
+                            help='path to store and read device configuration')
         parser.add_argument('--credentials', type=existing_file,
                             metavar='OAUTH2_CREDENTIALS_FILE',
                             default=os.path.join(
