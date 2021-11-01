@@ -29,10 +29,10 @@
 #include <effects/Strobe.h>
 #include <SPI.h>
 
-#define FRONT_DATA 50
-#define FRONT_CLOCK 51
-#define INTERIOR_DATA 48
-#define INTERIOR_CLOCK 49
+#define FRONT_DATA 9
+#define FRONT_CLOCK 8
+#define INTERIOR_DATA 11
+#define INTERIOR_CLOCK 10
 
 #define FRONT_LENGTH 54
 #define INTERIOR_LENGTH 56
