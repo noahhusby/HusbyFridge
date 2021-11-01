@@ -122,6 +122,9 @@ class Myassistant():
     def main(self):
         subprocess.Popen(["amixer", "-c", "2", "sset", "Headphone", "100%"],
                          stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        subprocess.Popen(["aplay", "-Dplug:gaudio", "{}/src/resources/startup.wav".format(ROOT_PATH)],
+                         stdin=subprocess.PIPE,
+                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         parser = argparse.ArgumentParser(
             formatter_class=argparse.RawTextHelpFormatter)
         parser.add_argument('--device-model-id', '--device_model_id', type=str,
@@ -171,8 +174,6 @@ class Myassistant():
         device_model_id = args.device_model_id or device_model_id
         with Assistant(credentials, device_model_id) as assistant:
             self.assistant = assistant
-            subprocess.Popen(["aplay", "-Dplug:gaudio", "{}/src/resources/startup.wav".format(ROOT_PATH)], stdin=subprocess.PIPE,
-                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             events = assistant.start()
             device_id = assistant.device_id
 
