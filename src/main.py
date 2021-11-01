@@ -120,11 +120,8 @@ class Myassistant():
             self.set_lighting('off')
 
     def main(self):
-        subprocess.Popen(["amixer", "-c", "2", "sset", "Headphone", "100%"],
-                         stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        subprocess.Popen(["aplay", "-Dplug:gaudio", "{}/src/resources/startup.wav".format(ROOT_PATH)],
-                         stdin=subprocess.PIPE,
-                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        os.system("amixer -c 2 sset Headphone 100%")
+        os.system("aplay -Dplug:gaudio /home/pi/HusbyFridge/src/resourcess/startup.wav")
         parser = argparse.ArgumentParser(
             formatter_class=argparse.RawTextHelpFormatter)
         parser.add_argument('--device-model-id', '--device_model_id', type=str,
