@@ -120,8 +120,6 @@ class Myassistant():
             self.set_lighting('off')
 
     def main(self):
-        subprocess.run(["amixer", "-c", "2", "sset", "Headphone", "100%"])
-        subprocess.run(["aplay", "-Dplug:gaudio", "{}/src/resources/startup.wav".format(ROOT_PATH)])
         parser = argparse.ArgumentParser(
             formatter_class=argparse.RawTextHelpFormatter)
         parser.add_argument('--device-model-id', '--device_model_id', type=str,
@@ -206,6 +204,8 @@ class Myassistant():
 
 if __name__ == '__main__':
     try:
+        subprocess.run(["amixer", "-c", "2", "sset", "Headphone", "100%"])
+        subprocess.run(["aplay", "-Dplug:gaudio", "{}/src/resources/startup.wav".format(ROOT_PATH)])
         Myassistant().main()
     except Exception as error:
         logging.exception(error)
