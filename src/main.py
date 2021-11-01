@@ -170,14 +170,13 @@ class Myassistant():
         with Assistant(credentials, device_model_id) as assistant:
             self.assistant = assistant
             subprocess.run(["amixer", "-c", "2", "sset", "Headphone", "100%"])
-            subprocess.run(["sudo", "killall", "-9", "pulseaudio"])
-            subprocess.run(["aplay", "-Dplug:gaudio", "{}/src/resources/startup.wav".format(ROOT_PATH)])
             events = assistant.start()
             device_id = assistant.device_id
 
             print(HEADER)
             print('Device Model ID:', device_model_id)
             print('Device ID:', device_id + '\n')
+            subprocess.run(["aplay", "-Dplug:gaudio", "{}/src/resources/startup.wav".format(ROOT_PATH)])
 
             for event in events:
                 self.process_event(event)
@@ -207,7 +206,6 @@ class Myassistant():
 
 if __name__ == '__main__':
     try:
-        subprocess.run(["sudo", "killall", "-9", "pulseaudio"])
         Myassistant().main()
     except Exception as error:
         logging.exception(error)
