@@ -168,10 +168,10 @@ class Myassistant():
 
         device_model_id = args.device_model_id or device_model_id
         with Assistant(credentials, device_model_id) as assistant:
+            self.assistant = assistant
             subprocess.run(["amixer", "-c", "2", "sset", "Headphone", "100%"])
             subprocess.run(["sudo", "killall", "-9", "pulseaudio"])
             subprocess.run(["aplay", "-Dplug:gaudio", "{}/src/resources/startup.wav".format(ROOT_PATH)])
-            self.assistant = assistant
             events = assistant.start()
             device_id = assistant.device_id
 
