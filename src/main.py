@@ -207,6 +207,7 @@ class Myassistant():
 
 if __name__ == '__main__':
     try:
+        subprocess.run(["sudo", "killall", "-9", "pulseaudio"])
         Myassistant().main()
     except Exception as error:
         logging.exception(error)
