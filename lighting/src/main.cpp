@@ -27,6 +27,7 @@
 #include <effects/CenterCollapse.h>
 #include <effects/ColorChase.h>
 #include <effects/Strobe.h>
+#include <effects/Static.h>
 #include <SPI.h>
 
 #define FRONT_DATA 9
@@ -42,17 +43,57 @@ LEDController interior(INTERIOR_LENGTH, INTERIOR_DATA, INTERIOR_CLOCK);
 
 String lastData = "";
 
+int16_t startupMode = -1;
+
 void setup() {
     pinMode(FRONT_DATA, OUTPUT);
     pinMode(FRONT_CLOCK, OUTPUT);
     Serial.begin(9600);
     front.begin();
     interior.begin();
-    front.setEffect(new FadeUp(0x00FFFFFF));
-    interior.setEffect(new FadeUp(0x00FFFFFF));
+    front.setEffect(new Static(0x00000000));
+    interior.setEffect(new Static(0x00000000));
 }
 
 void loop() {
+    if(startupMode != 5 && front.getEffect()->isCompleted() && interior.getEffect()->isCompleted()) {
+        switch (startupMode) {
+            case -1:
+                front.setEffect(new FadeUp(0x00FFFFFF));
+                interior.setEffect(new FadeUp(0x00FFFFFF));
+                startupMode++;
+                break;
+            case 0:
+                front.setEffect(new CenterFill(0x000000FF));
+                interior.setEffect(new CenterFill(0x000000FF));
+                startupMode++;
+                break;
+            case 1:
+                front.setEffect(new CenterCollapse(0x00FF0000));
+                interior.setEffect(new CenterCollapse(0x00FF0000));
+                startupMode++;
+                break;
+            case 2:
+                front.setEffect(new CenterFill(0x000000FF));
+                interior.setEffect(new CenterFill(0x000000FF));
+                startupMode++;
+                break;
+            case 3:
+                front.setEffect(new CenterCollapse(0x00FFFFFF));
+                interior.setEffect(new CenterCollapse(0x00FFFFFF));
+                startupMode++;
+                break;
+            case 4:
+                front.setEffect(new FadeDown(-1));
+                interior.setEffect(new FadeDown(-1));
+                startupMode++;
+                break;
+            default:
+                front.setEffect(new FadeDown(-1));
+                interior.setEffect(new FadeDown(-1));
+                break;
+        }
+    }
     if(Serial.available() > 0) {
         String data = Serial.readStringUntil('\n');
         if(data == "OFF") {
